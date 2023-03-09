@@ -1,47 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios';
-// import { GoogleLogin } from "@react-oauth/google";
-import {useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-
-
+import { Button } from '@mui/material';
+const clientId = '811722996486-4gavm2a7d0t8388ph715f9ge973da520.apps.googleusercontent.com'
 const GoogleLoginButton = () => {
 
-    const [user, setUser] = useState();
-    const [profile, setProfile] = useState()
+    const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(null)
 
     const navigate = useNavigate()
+    const redirects = useCallback(() => {
 
-  /*   function onSuccess(res) {
-        console.log("successfully Logged in");
-        setUser(res)
         navigate('/Content', {
             state: {
                 userName: profile.name,
                 userProfile: profile.picture,
                 userEmail: profile.email
             }
-        });
-    }
-
-    function onError(error) {
-        console.log("Login Failed", error);
-        navigate('/SignIn');
-    } */
+        })
+    }, [navigate, profile])
 
     const login = useGoogleLogin({
-        onSuccess: (codeResponse) => {setUser(codeResponse)
-            navigate('/Content', {
-                state: {
-                    userName: profile.name,
-                    userProfile: profile.picture,
-                    userEmail: profile.email
-                }
-            })},
-        onError: (error) => console.log('Login Failed:', error)
-    });
-
-
+        clientId: clientId,
+        onSuccess: (codeResponse) => {
+            setUser(codeResponse);
+            console.log("Logged in", codeResponse);
+        },
+        onError: (error) => console.log('Login Failed:', error),
+        uxMode: 'popup'
+    })
 
     useEffect(() => {
         if (user) {
@@ -53,21 +41,25 @@ const GoogleLoginButton = () => {
                     }
                 }).then((response) => {
                     setProfile(response.data)
+                }).catch((err) => {
+                    console.log("cannot fetch user profile", err.message)
                 })
             } catch (err) {
-                console.log(err)
+                console.log("cannot fetch user profile", err.message)
             }
         }
     }, [user])
 
+    useEffect(() => {
+        if (profile) {
+            redirects();
+        }
+    }, [profile, redirects])
+
+
     return (
-        // <GoogleLogin onSuccess={onSuccess}
-        //     onError={onError}
-        // ></GoogleLogin>
-        <button onClick={login}>Sign in with Google 🚀 </button>
+        <Button variant="contained" color="error" sx={{backgroundColor:'#4285F4'}}onClick={login}>Sign in with Google 🔥 </Button>
     )
 }
 
 export default GoogleLoginButton
-
-

@@ -22,6 +22,7 @@ const VideoPlayer = () => {
               modestbranding: 0,
               playsinline: 0,
               rel:0,
+              origin:'http://localhost:3000/Content'
             }
           }
         }}

@@ -6,15 +6,19 @@ import twitter from './assets/images/Socials/twitter.svg'
 export const socials=[
     {
         name:'Linkedin',
-        icon:linkedin
+        icon:linkedin,
+        url:"https://www.linkedin.com/in/nikhilsaini99/"
     },
     {
         name:'Git-Hub',
-        icon:github
+        icon:github,
+        url:'https://github.com/NikhilSaini99'
     },
     {
         name:'Twitter',
-        icon:twitter
+        icon:twitter,
+        url:""
     }
 
 ]
+

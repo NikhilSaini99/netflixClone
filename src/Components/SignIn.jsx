@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import GoogleLoginButton from './Utils/GoogleLoginButton'
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, Stack, TextField, Typography } from '@mui/material'
 import background from '../assets/images/background1.jpg'
@@ -6,15 +6,14 @@ import logo from '../assets/images/netflix.svg'
 import { grey } from '@mui/material/colors'
 import { Link } from 'react-router-dom'
 
-
 const SignIn = () => {
-
+//  const clientId = "809188169045-fk7d1hqogk3fbm3692fpognmj967171p.apps.googleusercontent.com";
   const [check, isChecked] = useState(true)
 
   function handleChangeCheckbox() {
     isChecked(!check);
   }
-    
+
   return (
     <Box>
       <Box sx={{ position: 'absolute' }}>
@@ -125,9 +124,9 @@ const SignIn = () => {
             />
           </Stack>
           <Stack direction='column' spacing={1} marginTop='1rem'>
-            <Button variant="contained" color="error"  component={Link} to="/Content"
-              sx={{ backgroundColor: '#e50914' }}>Sign In</Button>
-            <GoogleLoginButton/>
+            <Button variant="contained" color="error" component={Link} to="/Content"
+              sx={{ backgroundColor: '#e50914' }}>Sign In As Guest</Button>
+             <GoogleLoginButton/>
           </Stack>
           <Stack direction='row' justifyContent='space-between' alignItems='center' marginTop='0.5rem'
             sx={{ marginBottom: { xs: '1rem', sm: '1.2rem', md: '1.8rem' } }}>

@@ -64,7 +64,7 @@ const Footer = () => {
           <Box sx={{ display: "flex", gap: "0.5rem"
            }}>
             {socials.map((item, index) => (
-              <img
+              <a href={`${item.url}`} target="*blank"><img
                 key={index}
                 src={item.icon}
                 alt={item.name}
@@ -74,7 +74,7 @@ const Footer = () => {
                   maxWidth: "3rem",
                   boxShadow: '1px 1px 1px 1px lightBlue'
                 }}
-              />
+              /></a>
             ))}
           </Box>
         </Box>

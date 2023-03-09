@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import logo from '../assets/images/netflix.svg'
-// import movie_background from '../assets/images/movie_back.jpg'
-// import profile from '../assets/images/profile.jpg'
+import profile from '../assets/images/profile.jpg'
 import { Box, Stack, Typography, IconButton, Drawer } from '@mui/material'
 import Rows from './Rows'
 import Footer from './Footer'
@@ -17,18 +16,28 @@ import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 const API_key = process.env.REACT_APP_API_KEY;
 
 const Popular_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_key}&language=en-US&page=1`;
-const Top_Rated_URL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_key}&language=en-US&page=1`;
-const Upcoming_URL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_key}&language=en-US&page=1`;
+const Trending_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${API_key}&language=en-US&page=2`;
+const Top_Rated_URL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_key}&page=1`;
+const Upcoming_URL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_key}&page=1`;
+const NowPlaying_URL = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_key}&page=1`;
 
 
 const Content = () => {
-  const location = useLocation()
+  const location = useLocation();
+  const [checking, setChecking] = useState(location.state)
+
+  const myRef = useRef()
+
+  if (checking === null) {
+    myRef.current = { userName: 'Guest', userProfile: profile }
+  }
+  else {
+    myRef.current = checking
+  }
+
   const [isOpen, setIsOpen] = useState(false);
   const [isMute, setMute] = useState(true)
-
   const [navColor, setNavColor] = useState(false)
-
-
   function changeColor() {
     if (window.scrollY > 100) {
       setNavColor(true)
@@ -55,7 +64,6 @@ const Content = () => {
   function handleMute() {
     setMute(!isMute)
   }
-
 
   return (
     <>
@@ -87,11 +95,14 @@ const Content = () => {
               listStyle:
                 'none'
             }}>
-              <li>Home</li>
-              <li>Tv Shows</li>
-              <li>News & Popular</li>
-              <li>Movies</li>
-              <li>My List</li>
+
+              <a href="#home" style={{ color: 'white' }}>  <li>Home</li></a>
+              <a href="#Popular_movies" style={{ color: 'white' }}><li>Popular Movies</li></a>
+              <a href="#top_movies" style={{ color: 'white' }}><li>Top Rated Movies</li></a>
+              <a href="#upcoming_movies" style={{ color: 'white' }}><li>Upcoming Movies</li></a>
+              <a href="#trending_movies" style={{ color: 'white' }}><li>Trending</li></a>
+              <a href="#playing_movies" style={{ color: 'white' }}><li>Now Playing</li></a>
+
             </Stack>
             <IconButton sx={{
               display: {
@@ -128,11 +139,12 @@ const Content = () => {
                   display: 'flex', flexDirection: 'column', gap: '1rem', listStyle: 'none',
                   alignItems: 'center', padding: '0'
                 }}>
-                  <li>Home</li>
-                  <li>Tv Shows</li>
-                  <li>News & Popular</li>
-                  <li>Movies</li>
-                  <li>My List</li>
+                  <a href="#home" style={{ color: 'white' }} onClick={handleHamburger}><li>Home</li></a>
+                  <a href="#Popular_movies" style={{ color: 'white' }} onClick={handleHamburger}><li>Popular Movies</li></a>
+                  <a href="#top_movies" style={{ color: 'white' }} onClick={handleHamburger}><li>Top Rated Movies</li></a>
+                  <a href="#upcoming_movies" style={{ color: 'white' }} onClick={handleHamburger}><li>Upcoming Movies</li></a>
+                  <a href="#trending_movies" style={{ color: 'white' }} onClick={handleHamburger}><li>Trending</li></a>
+                  <a href="#playing_movies" style={{ color: 'white' }} onClick={handleHamburger}><li>Now Playing</li></a>
                 </ul>
 
                 <IconButton
@@ -153,29 +165,21 @@ const Content = () => {
             </Drawer>
 
           </Stack>
-          <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'flex-end', alignItems: 'center' , gap:'1rem'}}>
-            <Typography variant='body1' sx={{fontWeight:'bold'}}>Welcome back! {location.state.userName}</Typography>
-            <img src={location.state.userProfile} alt="profile-jpg" style={{
+          <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
+
+            <Typography variant='body1' sx={{ fontWeight: 'bold' }}>Welcome back! {myRef.current.userName}</Typography>
+            <img src={myRef.current.userProfile} alt="profile-jpg" style={{
               width: '52px', height: '52px', borderRadius: '50%',
               objectFit: 'cover'
             }} />
+
           </Box>
         </Stack>
       </Stack>
       {/* Navbar Close */}
 
-
-      {/* Movie Background Image Start */}
-      {/* <Box sx={{ backgroundColor: 'gray', position: 'relative', zIndex: '-1' }}>
-        <img src={movie_background} alt="movie-background" style={{
-          width: '100%', height: '100%',
-          objectFit: 'cover'
-        }} />
-      </Box> */}
-
-      {/* Movie Background Image End */}
-
-      <Box sx={{ position: 'relative', top: '-8px'}}>
+      <Box role="region" aria-labelledby='Home' id="home"
+        sx={{ position: 'relative', top: '-8px' }}>
         <ReactPlayer
           url={videoback}
           width="100%"
@@ -194,25 +198,25 @@ const Content = () => {
             }
           }}
         />
-  <Box>
-        <IconButton sx={{ position: 'absolute', right: {xs:'20px',sm:'30px',md:'50px'}, bottom: {xs:'60px',sm:'150px',md:'200px',lg:'300px',xl:'350px'} }} onClick={handleMute}>
-          {isMute ? <VolumeOffIcon sx={{
-            border:'2px solid white',
-            borderRadius:'50%',
-            color: "white",
-            fontSize: { xs: '1rem', sm: '2rem', md: '4rem' }
-          }} /> : <VolumeUpIcon sx={{
-            border:'2px solid white',
-            borderRadius:'50%',
-            color: "white",
-            fontSize: { xs: '1rem', sm: '2rem', md: '4rem' }
-          }} />}
-        </IconButton>
-</Box>
+        <Box>
+          <IconButton sx={{ position: 'absolute', right: { xs: '20px', sm: '30px', md: '50px' }, bottom: { xs: '60px', sm: '150px', md: '200px', lg: '300px', xl: '350px' } }} onClick={handleMute}>
+            {isMute ? <VolumeOffIcon sx={{
+              border: '2px solid white',
+              borderRadius: '50%',
+              color: "white",
+              fontSize: { xs: '1rem', sm: '2rem', md: '4rem' }
+            }} /> : <VolumeUpIcon sx={{
+              border: '2px solid white',
+              borderRadius: '50%',
+              color: "white",
+              fontSize: { xs: '1rem', sm: '2rem', md: '4rem' }
+            }} />}
+          </IconButton>
+        </Box>
       </Box>
 
 
-      <Box sx={{ position: 'relative', top: '0'}}>
+      <Box sx={{ position: 'relative', top: '0' }}>
         <Box sx={{
           backgroundColor: 'transparent',
           backgroundImage: 'linear-gradient(180deg,hsla(0,0%,8%,0) 0,hsla(0,0%,8%,.15) 15%,hsla(0,0%,8%,.35) 29%,hsla(0,0%,8%,.58) 44%,#141414 68%,#141414)',
@@ -242,19 +246,36 @@ const Content = () => {
           position: 'relative', top: { xs: '-45px', sm: '-100px', md: '-150px', lg: '-180px' }, zIndex: 10
         }}>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
+          <Box role="region" aria-labelledby='Popular_movies' id="Popular_movies"
+
+            sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
             <Typography sx={{ pl: { xs: '2rem', md: '4rem' }, fontSize: { xs: '1.5rem' } }}>Popular Movies</Typography>
             <Rows url={Popular_URL} />
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
+          <Box role="region" aria-labelledby='Top_Rated_Movies' id="top_movies"
+            sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
             <Typography sx={{ pl: { xs: '2rem', md: '4rem' }, fontSize: { xs: '1.5rem' } }}>Top Rated Movies</Typography>
             <Rows url={Top_Rated_URL} />
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
+          <Box role="region" aria-labelledby='Upcoming_Movies' id="upcoming_movies"
+            sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
             <Typography sx={{ pl: { xs: '2rem', md: '4rem' }, fontSize: { xs: '1.5rem' } }}>Upcoming Movies</Typography>
             <Rows url={Upcoming_URL} />
+          </Box>
+
+
+          <Box role="region" aria-labelledby='trending_movies' id="trending_movies"
+            sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
+            <Typography sx={{ pl: { xs: '2rem', md: '4rem' }, fontSize: { xs: '1.5rem' } }}>Trending</Typography>
+            <Rows url={Trending_URL} />
+          </Box>
+
+          <Box role="region" aria-labelledby='Now_Playing' id="playing_movies"
+            sx={{ display: 'flex', flexDirection: 'column', gap: { xs: '1rem', sm: '2rem' } }}>
+            <Typography sx={{ pl: { xs: '2rem', md: '4rem' }, fontSize: { xs: '1.5rem' } }}>Now Playing</Typography>
+            <Rows url={NowPlaying_URL} />
           </Box>
 
         </Box>
